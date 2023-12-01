@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Clock</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: black;
+            color: white;
+        }
+
+        #clock {
+            font-size: 5em;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        #timezone {
+            font-size: 1.5em;
+        }
+
+        .hours {
+            color: #ff5252; /* Red */
+        }
+
+        .minutes {
+            color: #64b5f6; /* Blue */
+        }
+
+        .seconds {
+            color: #66bb6a; /* Green */
+        }
+    </style>
+</head>
+<body>
+
+<div id="clock"></div>
+<div id="timezone"></div>
+
+<script>
+    function updateClock() {
+        var now = new Date();
+        var hours = now.getHours();
+        var minutes = now.getMinutes();
+        var seconds = now.getSeconds();
+
+        // Format the time to ensure double digits
+        hours = hours < 10 ? '0' + hours : hours;
+        minutes = minutes < 10 ? '0' + minutes : minutes;
+        seconds = seconds < 10 ? '0' + seconds : seconds;
+
+        var timeString = `<span class="hours">${hours}</span>:<span class="minutes">${minutes}</span>:<span class="seconds">${seconds}</span>`;
+        var timezoneString = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+        document.getElementById('clock').innerHTML = timeString;
+        document.getElementById('timezone').textContent = 'Time Zone: ' + timezoneString;
+    }
+
+    // Update the clock every second
+    setInterval(updateClock, 1000);
+
+    // Initial call to display the clock immediately
+    updateClock();
+</script>
+
+</body>
+</html>

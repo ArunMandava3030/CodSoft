@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task List App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #taskList {
+            width: 400px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            background-color: #ff6666;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        input[type="text"] {
+            padding: 6px;
+            margin-right: 5px;
+        }
+
+        .edit-btn, .save-btn {
+            background-color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+
+<div id="taskList">
+    <h2>Task List</h2>
+    <ul id="tasks"></ul>
+    <div>
+        <input type="text" id="newTask" placeholder="New task...">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+</div>
+
+<script>
+    function addTask() {
+        var taskInput = document.getElementById('newTask');
+        var taskText = taskInput.value.trim();
+
+        if (taskText !== '') {
+            var tasksContainer = document.getElementById('tasks');
+            var li = document.createElement('li');
+            li.innerHTML = `
+                <span>${taskText}</span>
+                <button class="edit-btn" onclick="editTask(this)">Edit</button>
+                <button onclick="deleteTask(this)">Delete</button>
+            `;
+            tasksContainer.appendChild(li);
+
+            saveTasksToLocalStorage();
+
+            taskInput.value = '';
+        }
+    }
+
+    function editTask(button) {
+        var li = button.parentNode;
+        var span = li.querySelector('span');
+        var editText = prompt('Edit task:', span.textContent);
+
+        if (editText !== null) {
+            span.textContent = editText;
+
+            var editBtn = li.querySelector('.edit-btn');
+            editBtn.textContent = 'Edit';
+            editBtn.classList.remove('save-btn');
+            saveTasksToLocalStorage();
+        }
+    }
+
+    function deleteTask(button) {
+        var li = button.parentNode;
+        li.parentNode.removeChild(li);
+        saveTasksToLocalStorage();
+    }
+
+    function saveTasksToLocalStorage() {
+        var tasksContainer = document.getElementById('tasks');
+        var tasks = [];
+
+        for (var i = 0; i < tasksContainer.children.length; i++) {
+            var taskText = tasksContainer.children[i].querySelector('span').textContent;
+            tasks.push(taskText);
+        }
+
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+    }
+
+    window.onload = function () {
+        var tasksContainer = document.getElementById('tasks');
+        var storedTasks = JSON.parse(localStorage.getItem('tasks')) || [];
+
+        for (var i = 0; i < storedTasks.length; i++) {
+            var li = document.createElement('li');
+            li.innerHTML = `
+                <span>${storedTasks[i]}</span>
+                <button class="edit-btn" onclick="editTask(this)">Edit</button>
+                <button onclick="deleteTask(this)">Delete</button>
+            `;
+            tasksContainer.appendChild(li);
+        }
+    };
+</script>
+
+</body>
+</html>
